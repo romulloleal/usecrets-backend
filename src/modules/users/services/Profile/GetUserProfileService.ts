@@ -3,10 +3,16 @@ import Follows from '@modules/users/infra/typeorm/entities/Follows'
 import User from '@modules/users/infra/typeorm/entities/User'
 import Profile from '@modules/users/infra/typeorm/entities/Profile'
 import Post from '@modules/posts/infra/typeorm/entities/Post'
+import GetProfilePostsService from '@modules/posts/services/GetProfilePostsService'
 
 interface Request {
   loggedUserId?: string
   userName: string
+}
+
+interface InitialPosts extends Post {
+  liked: boolean
+  author: Profile
 }
 
 interface Response {
@@ -15,6 +21,10 @@ interface Response {
   totalFollowers: number
   totalPosts: number
   followStatus: string // following | request | notFollowing | userProfile
+  initialPosts: {
+    posts: InitialPosts[]
+    hasMore: boolean
+  }
 }
 
 class GetUserProfileService {
@@ -37,6 +47,10 @@ class GetUserProfileService {
         totalFollowers: 0,
         totalPosts: 0,
         followStatus,
+        initialPosts: {
+          posts: [],
+          hasMore: false
+        }
       }
     }
 
@@ -71,12 +85,17 @@ class GetUserProfileService {
       followStatus = 'userProfile'
     }
 
+    const getProfilePosts = new GetProfilePostsService()
+
+    const initialPosts = await getProfilePosts.execute({skip: 0, userName, loggedUserId})
+
     return {
       profile: user.profile,
       totalFollowing,
       totalFollowers,
       totalPosts,
       followStatus,
+      initialPosts
     }
   }
 }
