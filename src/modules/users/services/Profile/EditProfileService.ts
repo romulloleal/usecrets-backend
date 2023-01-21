@@ -95,12 +95,12 @@ class EditProfileService {
       privateProfile
     }
 
-    await profileRepository.save(newProfile)
+    const profile = await profileRepository.save(newProfile)
 
     const userProfile: AutenticatedUser = {
       id: user.id,
       email: user.email,
-      profile: user.profile
+      profile: profile
     }
 
     return userProfile
