@@ -15,12 +15,12 @@ interface Request {
 
 interface IPost extends Post {
   liked?: boolean
-  author: Profile
   mentions: { id: string; userName: string }[] | undefined
 }
 
 interface PostResponse {
   post: IPost | undefined
+  author: Profile | undefined
   postNotFound: boolean
   privatePost: boolean
 }
@@ -37,7 +37,7 @@ class GetPostService {
     const validUUID = regexUUID.test(postId)
 
     if (!validUUID) {
-      return { post: undefined, postNotFound: true, privatePost: false }
+      return { post: undefined, author: undefined, postNotFound: true, privatePost: false }
     }
 
     const getPost = await postsRepository.findOne({
@@ -46,7 +46,7 @@ class GetPostService {
     })
 
     if (!getPost) {
-      return { post: undefined, postNotFound: true, privatePost: false }
+      return { post: undefined, author: undefined, postNotFound: true, privatePost: false }
     }
 
     const checkIsFollowing = await followsRepository.findOne({
@@ -57,8 +57,10 @@ class GetPostService {
       },
     })
 
+    const profile = getPost.user.profile
+
     if (!checkIsFollowing && getPost.user.profile.privateProfile) {
-      return { post: undefined, postNotFound: false, privatePost: true }
+      return { post: undefined, author: profile, postNotFound: false, privatePost: true }
     }
 
     const liked = await postLikesRepository.findOne({
@@ -68,15 +70,14 @@ class GetPostService {
     const getMentions = new GetPostMentionsService()
     const mentions = await getMentions.execute(getPost.id)
 
-    const profile = getPost.user.profile
     delete (getPost as any).user
     return {
       post: {
         ...getPost,
-        author: profile,
         liked: loggedUserId && liked ? true : false,
         mentions,
       },
+      author: profile,
       postNotFound: false,
       privatePost: false,
     }
