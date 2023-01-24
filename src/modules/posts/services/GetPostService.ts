@@ -59,7 +59,7 @@ class GetPostService {
 
     const profile = getPost.user.profile
 
-    if (!checkIsFollowing && getPost.user.profile.privateProfile) {
+    if (!checkIsFollowing && getPost.user.profile.privateProfile && loggedUserId !== getPost.userId) {
       return { post: undefined, author: profile, postNotFound: false, privatePost: true }
     }
 
