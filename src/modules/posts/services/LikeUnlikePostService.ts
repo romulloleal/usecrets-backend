@@ -42,6 +42,7 @@ class LikeUnlikePostService {
           fromUserId: loggedUserId,
           toUserId: post.user.id,
           type: NotificationType.POST_LIKED,
+          postId: postId
         })
 
         // emit notification to user
