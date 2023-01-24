@@ -53,6 +53,7 @@ class GetPostService {
       where: {
         followerUserId: loggedUserId,
         followedUserId: getPost.userId,
+        followRequest: false
       },
     })
 

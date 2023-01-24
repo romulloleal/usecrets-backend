@@ -19,8 +19,6 @@ class GetPostMentionsService {
       where: { id: postId },
     })
 
-    console.log(getPost)
-
     const mentions = getPost?.mentionedUsers.map((mention) => {
       return {
         id: mention.user.profile.userId,
