@@ -3,7 +3,6 @@ import { AppDataSource } from '@shared/infra/typeorm'
 import Post from '@modules/posts/infra/typeorm/entities/Post'
 import Profile from '@modules/users/infra/typeorm/entities/Profile'
 import AppError from '@shared/errors/AppError'
-import Profanity from 'profanity-js'
 import PostMention from '../infra/typeorm/entities/PostMention'
 import Notification, {
   NotificationType,
@@ -11,7 +10,7 @@ import Notification, {
 import { socket } from '@shared/infra/http/server'
 
 interface Request {
-  text?: string
+  text: string
   image?: string
   loggedUserId: string
 }
@@ -44,13 +43,8 @@ class CreatePostService {
       throw new AppError('pleasePostTextOrimage')
     }
 
-    const filterPortuguese = new Profanity(text)
-    const filterEnglish = new Profanity(filterPortuguese.censor(), {
-      language: 'en-us',
-    })
-
-    let searchMentions = filterEnglish.censor().match(/\{(.*?)\}/g)
-    let newText = filterEnglish.censor()
+    let searchMentions = text.match(/\{(.*?)\}/g)
+    let newText = text
     let mentions: { id: string; userName: string }[] = []
     if (searchMentions) {
       searchMentions.map(mention => {
