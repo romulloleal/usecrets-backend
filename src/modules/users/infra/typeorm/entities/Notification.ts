@@ -1,3 +1,4 @@
+import Post from '@modules/posts/infra/typeorm/entities/Post';
 import PostLike from '@modules/posts/infra/typeorm/entities/PostLike';
 import Follows from '@modules/users/infra/typeorm/entities/Follows';
 import User from '@modules/users/infra/typeorm/entities/User';
@@ -16,6 +17,7 @@ export enum NotificationType {
   FOLLOW_REQUEST = 'followRequest',
   FOLLOW_ACCEPTED = 'followAccepted',
   POST_LIKED = 'postLiked',
+  POST_MENTION = 'postMention'
 }
 
 @Entity('notifications')
@@ -27,7 +29,7 @@ class Notification {
     type: 'enum',
     enum: NotificationType,
   })
-  notificationType: string;
+  type: string;
 
   @Column()
   toUserId: string
@@ -56,6 +58,13 @@ class Notification {
   @OneToOne(() =>PostLike)
   @JoinColumn()
   like: PostLike
+
+  @Column()
+  postId: string
+
+  @OneToOne(() => Post)
+  @JoinColumn()
+  Post: Post
 
   @Column()
   newNotification: boolean

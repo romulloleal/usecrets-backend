@@ -7,6 +7,8 @@ import LikeUnlikePostService from '@modules/posts/services/LikeUnlikePostService
 import uploadConfig from '@config/upload'
 import GetProfilePostsService from '@modules/posts/services/GetProfilePostsService'
 import GetAllPostsService from '@modules/posts/services/GetAllPostsService'
+import DeletePostService from '@modules/posts/services/DeletePostService'
+import GetPostService from '@modules/posts/services/GetPostService'
 
 const postRouter = Router()
 
@@ -113,6 +115,40 @@ postRouter.post(
 
     return response.json({
       status: 'success',
+    })
+  }
+)
+
+postRouter.post(
+  '/deletePost',
+  ensureAuthenticated,
+  async (request, response) => {
+    const { postId } = request.body
+
+    const loggedUserId = request.user.id
+
+    const deletePost = new DeletePostService()
+
+    await deletePost.execute({ postId, loggedUserId })
+
+    return response.json({
+      status: 'success',
+    })
+  }
+)
+
+postRouter.post(
+  '/getPost',
+  async (request, response) => {
+    const { postId, loggedUserId } = request.body
+
+    const getPost = new GetPostService()
+
+    const post = await getPost.execute({ postId, loggedUserId })
+
+    return response.json({
+      status: 'success',
+      data: post
     })
   }
 )

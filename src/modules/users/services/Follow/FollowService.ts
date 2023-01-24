@@ -41,7 +41,7 @@ class FollowService {
       followId: follow.id,
       fromUserId: loggedUserId,
       toUserId: followedUser.id,
-      notificationType: followedUser.profile.privateProfile
+      type: followedUser.profile.privateProfile
         ? NotificationType.FOLLOW_REQUEST
         : NotificationType.NEW_FOLLOW,
     })

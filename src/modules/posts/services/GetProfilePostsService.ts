@@ -4,7 +4,7 @@ import Post from '@modules/posts/infra/typeorm/entities/Post'
 import Follows from '@modules/users/infra/typeorm/entities/Follows'
 import User from '@modules/users/infra/typeorm/entities/User'
 import Profile from '@modules/users/infra/typeorm/entities/Profile'
-import { CheckPostIsLiked } from './CheckPostIsLiked'
+import { FormatPost } from './FormatPost'
 
 interface Request {
   skip: number
@@ -15,6 +15,7 @@ interface Request {
 interface Posts extends Post {
   liked: boolean
   author: Profile
+  mentions: { id: string; userName: string }[] | undefined
 }
 
 interface Response {
@@ -66,7 +67,7 @@ class GetProfilePostsService {
     })
 
     // check user liked post or not
-    const posts = await CheckPostIsLiked({
+    const posts = await FormatPost({
       posts: searchPosts[0],
       loggedUserId,
     })

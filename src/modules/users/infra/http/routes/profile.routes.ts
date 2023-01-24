@@ -10,6 +10,7 @@ import ChangeProfileImageService from '@modules/users/services/Profile/ChangePro
 import DeleteCoverImage from '@modules/users/services/Profile/DeleteCoverImage'
 import DeleteProfileImage from '@modules/users/services/Profile/DeleteProfileImage'
 import GetNotificationsService from '@modules/users/services/Notification/GetNotificationsService'
+import MarkNotificationAsRead from '@modules/users/services/Notification/MarkNotificationAsRead'
 
 const profileRouter = Router()
 
@@ -167,6 +168,28 @@ profileRouter.post(
     return response.json({
       status: 'success',
       data: notifications,
+    })
+  }
+)
+
+profileRouter.post(
+  '/markNotificationAsRead',
+  ensureAuthenticated,
+  async (request, response) => {
+    const { notificationId, markAll } = request.body
+
+    const loggedUserId = request.user.id
+
+    const markNotificationAsRead = new MarkNotificationAsRead()
+
+    await markNotificationAsRead.execute({
+      notificationId,
+      loggedUserId,
+      markAll,
+    })
+
+    return response.json({
+      status: 'success',
     })
   }
 )

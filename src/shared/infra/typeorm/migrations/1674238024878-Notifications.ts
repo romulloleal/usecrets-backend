@@ -19,10 +19,15 @@ export class Notifications1674238024878 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'notificationType',
+            name: 'type',
             type: 'enum',
-            enum: ['newFollow', 'followRequest', 'followAccepted', 'postLiked'],
-            enumName: 'notificationTypeEnum'
+            enum: [
+              'newFollow',
+              'followRequest',
+              'followAccepted',
+              'postLiked',
+              'postMention',
+            ],
           },
           {
             name: 'toUserId',
@@ -41,6 +46,11 @@ export class Notifications1674238024878 implements MigrationInterface {
             name: 'likeId',
             type: 'uuid',
             isNullable: true,
+          },
+          {
+            name: 'postId',
+            type: 'uuid',
+            isNullable: true
           },
           {
             name: 'newNotification',
@@ -90,10 +100,18 @@ export class Notifications1674238024878 implements MigrationInterface {
         referencedTableName: 'post_likes',
         onDelete: 'CASCADE',
       }),
+      new TableForeignKey({
+        name: 'post',
+        columnNames: ['postId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'posts',
+        onDelete: 'CASCADE',
+      })
     ])
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropForeignKey('notifications', 'post')
     await queryRunner.dropForeignKey('notifications', 'like')
     await queryRunner.dropForeignKey('notifications', 'follow')
     await queryRunner.dropForeignKey('notifications', 'fromUser')

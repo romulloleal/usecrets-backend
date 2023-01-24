@@ -6,7 +6,6 @@ import Notification, {
 } from '@modules/users/infra/typeorm/entities/Notification'
 import { socket } from '@shared/infra/http/server'
 
-
 interface Request {
   loggedUserId: string
   followRequestId: string
@@ -38,7 +37,7 @@ class AcceptRejectFollowerRequestService {
       // edit followNotification
       await notificationRepository.update(
         { followId: followRequest.id },
-        { notificationType: NotificationType.NEW_FOLLOW }
+        { type: NotificationType.NEW_FOLLOW, newNotification: false }
       )
 
       // create notification
@@ -46,12 +45,18 @@ class AcceptRejectFollowerRequestService {
         followId: followRequest.id,
         fromUserId: loggedUserId,
         toUserId: followRequest.followerUserId,
-        notificationType: NotificationType.FOLLOW_ACCEPTED,
+        type: NotificationType.FOLLOW_ACCEPTED,
       })
 
       // emit notification to user
-      if(socket.sockets.adapter.rooms.get(followRequest.followerUser.profile.userName)) {
-        socket.to(followRequest.followerUser.profile.userName).emit('newNotification', true)
+      if (
+        socket.sockets.adapter.rooms.get(
+          followRequest.followerUser.profile.userName
+        )
+      ) {
+        socket
+          .to(followRequest.followerUser.profile.userName)
+          .emit('newNotification', true)
       }
     }
     if (followRequest && action === 'reject') {

@@ -15,7 +15,7 @@ class SearchProfilesService {
 
     const profiles = await profileRepository.find({
       where: { userName: Like(`%${search}%`) },
-      take: 20,
+      take: 10,
     })
 
     return profiles

@@ -11,7 +11,7 @@ interface Response {
   notifications: {
     id: string
     fromUser: Profile
-    notificationType: string
+    type: string
     newNotification: boolean
     followId: string
     likeId: string
@@ -39,7 +39,7 @@ class CheckHasNewNotificationsService {
       return {
         id: notification.id,
         fromUser,
-        notificationType: notification.notificationType,
+        type: notification.type,
         newNotification: notification.newNotification,
         followId: notification.followId,
         likeId: notification.likeId,

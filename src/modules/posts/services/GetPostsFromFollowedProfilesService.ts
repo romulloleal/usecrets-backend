@@ -1,4 +1,4 @@
-import { CheckPostIsLiked } from './CheckPostIsLiked';
+import { FormatPost } from './FormatPost';
 import { AppDataSource } from '@shared/infra/typeorm'
 
 import Post from '@modules/posts/infra/typeorm/entities/Post'
@@ -14,6 +14,7 @@ interface Request {
 interface Posts extends Post {
   liked: boolean
   author: Profile
+  mentions: { id: string; userName: string }[] | undefined
 }
 
 interface Response {
@@ -39,7 +40,7 @@ class GetPostsFromFollowedProfilesService {
     })
 
     // check user liked post or not
-    const posts = await CheckPostIsLiked({ posts: searchPosts[0], loggedUserId })
+    const posts = await FormatPost({ posts: searchPosts[0], loggedUserId })
 
     // for pagination purpose
     const hasMore = skip + searchPosts[0].length < searchPosts[1]

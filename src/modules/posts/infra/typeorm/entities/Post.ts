@@ -12,6 +12,7 @@ import {
   AfterLoad,
 } from 'typeorm'
 import PostLike from './PostLike'
+import PostMention from './PostMention'
 
 @Entity('posts')
 class Post {
@@ -35,6 +36,9 @@ class Post {
 
   @OneToMany(() => PostLike, postLike => postLike.post)
   postLikes: PostLike[]
+
+  @OneToMany(() => PostMention, postMention => postMention.post)
+  mentionedUsers: PostMention[]
 
   @CreateDateColumn()
   createdAt: Date
