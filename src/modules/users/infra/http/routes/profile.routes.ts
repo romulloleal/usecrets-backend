@@ -69,7 +69,7 @@ profileRouter.post('/searchProfiles', async (request, response) => {
 
 profileRouter.post(
   '/updateCoverImage',
-  uploadConfig.uploadImage,
+  uploadConfig.storage,
   ensureAuthenticated,
   async (request, response) => {
     const userId = request.user.id
@@ -77,7 +77,7 @@ profileRouter.post(
     let coverImage = undefined
 
     if (request.file) {
-      coverImage = await uploadConfig.uploadImageToRepository({
+      coverImage = await uploadConfig.uploadImage({
         file: request.file,
         folder: 'cover',
       })
@@ -96,7 +96,7 @@ profileRouter.post(
 
 profileRouter.post(
   '/updateProfileImage',
-  uploadConfig.uploadImage,
+  uploadConfig.storage,
   ensureAuthenticated,
   async (request, response) => {
     const userId = request.user.id
@@ -104,7 +104,7 @@ profileRouter.post(
     let profileImage = undefined
 
     if (request.file) {
-      profileImage = await uploadConfig.uploadImageToRepository({
+      profileImage = await uploadConfig.uploadImage({
         file: request.file,
         folder: 'profile',
       })

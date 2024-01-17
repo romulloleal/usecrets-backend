@@ -7,6 +7,10 @@ temp/
 
 dist/
 
+images/**
+!images/*/
+!images/*/.gitkeep
+
 .env
 
 yarn.lock

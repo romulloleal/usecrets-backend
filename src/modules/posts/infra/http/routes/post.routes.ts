@@ -14,7 +14,7 @@ const postRouter = Router()
 
 postRouter.post(
   '/createPost',
-  uploadConfig.uploadImage,
+  uploadConfig.storage,
   ensureAuthenticated,
   async (request, response) => {
     const { text } = request.body
@@ -22,7 +22,7 @@ postRouter.post(
     let image = undefined
 
     if (request.file) {
-      image = await uploadConfig.uploadImageToRepository({
+      image = await uploadConfig.uploadImage({
         file: request.file,
         folder: 'post',
       })
@@ -137,20 +137,17 @@ postRouter.post(
   }
 )
 
-postRouter.post(
-  '/getPost',
-  async (request, response) => {
-    const { postId, loggedUserId } = request.body
+postRouter.post('/getPost', async (request, response) => {
+  const { postId, loggedUserId } = request.body
 
-    const getPost = new GetPostService()
+  const getPost = new GetPostService()
 
-    const post = await getPost.execute({ postId, loggedUserId })
+  const post = await getPost.execute({ postId, loggedUserId })
 
-    return response.json({
-      status: 'success',
-      data: post
-    })
-  }
-)
+  return response.json({
+    status: 'success',
+    data: post,
+  })
+})
 
 export default postRouter
