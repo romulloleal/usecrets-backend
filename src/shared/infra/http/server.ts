@@ -10,6 +10,7 @@ import 'express-async-errors'
 import cors from 'cors'
 import http from 'http'
 import { Server } from 'socket.io'
+import uploadConfig from '@config/upload'
 
 import routes from './routes'
 import AppError from '@shared/errors/AppError'
@@ -35,6 +36,9 @@ socket.on('connection', socket => {
 
 app.use(cors())
 app.use(express.json())
+app.use('/files/post', express.static(uploadConfig.postImagesFolder))
+app.use('/files/profile', express.static(uploadConfig.profileImagesFolder))
+app.use('/files/cover', express.static(uploadConfig.coverImagesFolder))
 app.use(routes, (_, res) => res.status(404).send('404 not found'))
 
 app.use(
@@ -54,8 +58,8 @@ app.use(
   }
 )
 
-serverHttp.listen(process.env.PORT || 3333, () => {
-  console.log('🚀 Server started on port 3333!')
+serverHttp.listen(process.env.PORT || 3335, () => {
+  console.log('🚀 Server started on port 3335!')
 })
 
 export { socket }
